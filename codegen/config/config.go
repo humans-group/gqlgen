@@ -292,7 +292,7 @@ type TypeMapField struct {
 }
 
 type ModelExtraField struct {
-	Type     string `yaml:"type"`
+	Type      string `yaml:"type"`
 	IsPointer bool   `yaml:"isPointer"`
 }
 
