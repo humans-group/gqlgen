@@ -102,6 +102,8 @@ func (m *Plugin) MutateConfig(cfg *config.Config) error {
 				it.Implements = append(it.Implements, implementor.Name)
 			}
 
+			modelCfg := cfg.Models[schemaType.Name]
+
 			for _, field := range schemaType.Fields {
 				var typ types.Type
 				fieldDef := cfg.Schema.Types[field.Type.Name()]
@@ -152,8 +154,8 @@ func (m *Plugin) MutateConfig(cfg *config.Config) error {
 				}
 
 				name := field.Name
-				if nameOveride := cfg.Models[schemaType.Name].Fields[field.Name].FieldName; nameOveride != "" {
-					name = nameOveride
+				if nameOverride := modelCfg.Fields[field.Name].FieldName; nameOverride != "" {
+					name = nameOverride
 				}
 
 				typ = binder.CopyModifiersFromAst(field.Type, typ)
@@ -167,6 +169,24 @@ func (m *Plugin) MutateConfig(cfg *config.Config) error {
 					Type:        typ,
 					Description: field.Description,
 					Tag:         `json:"` + field.Name + `"`,
+				})
+			}
+
+			for fieldName, fieldSpec := range modelCfg.ExtraFields {
+				typ, err := binder.FindTypeFromName(fieldSpec.Type)
+				if err != nil {
+					return err
+				}
+
+				if fieldSpec.IsPointer {
+					typ = types.NewPointer(typ)
+				}
+
+				it.Fields = append(it.Fields, &Field{
+					Name:        fieldName,
+					Type:        typ,
+					Description: "Custom extra field",
+					Tag:         `json:"-"`,
 				})
 			}
 
