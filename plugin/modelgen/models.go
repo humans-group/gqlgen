@@ -170,7 +170,38 @@ func (m *Plugin) MutateConfig(cfg *config.Config) error {
 				})
 			}
 
+<<<<<<< Updated upstream
 			b.Models = append(b.Models, it)
+=======
+			extraFields := make([]*Field, 0, len(modelCfg.ExtraFields))
+			for fieldName, fieldSpec := range modelCfg.ExtraFields {
+				typ, err := binder.FindTypeFromName(fieldSpec.Type)
+				if err != nil {
+					return err
+				}
+
+				if fieldSpec.IsPointer {
+					typ = types.NewPointer(typ)
+				}
+
+				extraFields = append(extraFields, &Field{
+					Name:        fieldName,
+					Type:        typ,
+					Description: "Custom extra field",
+					Tag:         `json:"-"`,
+				})
+			}
+
+			sort.Slice(
+				extraFields,
+				func(i, j int) bool {
+					return extraFields[i].Name < extraFields[j].Name
+				},
+			)
+			it.Fields = append(it.Fields, extraFields...)
+
+			b.Models = append(b.Models)
+>>>>>>> Stashed changes
 		case ast.Enum:
 			it := &Enum{
 				Name:        schemaType.Name,
