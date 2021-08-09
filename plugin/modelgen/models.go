@@ -199,7 +199,7 @@ func (m *Plugin) MutateConfig(cfg *config.Config) error {
 			)
 			it.Fields = append(it.Fields, extraFields...)
 
-			b.Models = append(b.Models)
+			b.Models = append(b.Models, it)
 		case ast.Enum:
 			it := &Enum{
 				Name:        schemaType.Name,
