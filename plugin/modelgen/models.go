@@ -170,9 +170,6 @@ func (m *Plugin) MutateConfig(cfg *config.Config) error {
 				})
 			}
 
-<<<<<<< Updated upstream
-			b.Models = append(b.Models, it)
-=======
 			extraFields := make([]*Field, 0, len(modelCfg.ExtraFields))
 			for fieldName, fieldSpec := range modelCfg.ExtraFields {
 				typ, err := binder.FindTypeFromName(fieldSpec.Type)
@@ -201,7 +198,6 @@ func (m *Plugin) MutateConfig(cfg *config.Config) error {
 			it.Fields = append(it.Fields, extraFields...)
 
 			b.Models = append(b.Models)
->>>>>>> Stashed changes
 		case ast.Enum:
 			it := &Enum{
 				Name:        schemaType.Name,
